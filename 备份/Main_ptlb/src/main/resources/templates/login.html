@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!--thymeleaf 定义链接格式是 th:href="@{链接}"-->
+    <!--th:href="@{/表示项目的根目录 resources 下的文件，static 是静态目录所以不用写}"-->
+    <link rel="icon" th:href="@{/assets/img/favicon.ico}"><!--资源链接-->
+
+    <title>Signin Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <!--thymeleaf 定义链接格式是 th:href="@{链接}"-->
+    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet"><!--资源链接-->
+
+    <!-- Custom styles for this template -->
+    <!--thymeleaf 定义链接格式是 th:href="@{链接}"-->
+    <link th:href="@{/assets/css/signin.css}" rel="stylesheet"><!--资源链接-->
+  </head>
+
+  <body class="text-center">
+    <!--点击按钮后，跳转到/main/login-->
+    <form class="form-signin" th:action="@{/main/login}">
+
+      <!--<img class="mb-4" th:src="@{https://getbootstrap.com/assets/brand/bootstrap-solid.svg}" alt="" width="72" height="72">-->
+      <img class="mb-4" th:src="@{/assets/img/favicon.ico}" alt="" width="72" height="72">
+
+      <!--国际化多语言文本添加方式  th:text="#{对应的文本名称}"-->
+      <h1 class="h3 mb-3 font-weight-normal" th:text="#{login.tip}">Please sign in</h1>
+
+      <!--@thymesVar id="msg" type="String"-->
+      <!--单纯只是传参的话，用 ${参数名}，#{}是用来国际化的，没有配置国际化文本的话会乱码-->
+      <!--th:if="${not #strings.isEmpty(msg)}"：如果 msg 的值为空，则不显示消息-->
+      <p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+
+      <!--<label for="sr-only" class="sr-only" th:text="#{login.username}">Username</label>-->
+
+      <!--国际化多语言文本添加方式  th:placeholder="#{对应的文本名称}"-->
+      <input type="text" name="username" id="sr-only" class="form-control" th:placeholder="#{login.username}" required autofocus>
+
+      <!--<label for="inputPassword" class="sr-only" th:text="#{login.password}">Password</label>-->
+
+      <!--国际化多语言文本添加方式  th:placeholder="#{对应的文本名称}"-->
+      <input type="password" name="password" id="inputPassword" class="form-control" th:placeholder="#{login.password}" required>
+      <div class="checkbox mb-3">
+        <label>
+
+          <!--在外面的文本就只能用这种格式 [[#{login.remember}]]-->
+          <input type="checkbox" value="remember-me" > [[#{login.remember}]]
+
+        </label>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" th:text="#{login.btn}">Sign in</button>
+
+      <!--设置注册按钮-->
+      <a class="btn btn-lg btn-primary btn-block" type="submit" text="注册" th:href="@{/main/goRegister}">注册</a>
+
+      <p class="mt-5 mb-3 text-muted">&copy; 2200-2400</p>
+      <a class="btn btn-sm" th:href="@{/index.html(l='zh_CN')}">中文</a>
+      <a class="btn btn-sm" th:href="@{/index.html(l='en_US')}">English</a>
+    </form>
+
+  </body>
+</html>

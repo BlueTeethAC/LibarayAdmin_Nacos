@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定 Mapper 接口-->
+<mapper namespace="com.LW1_ptlb.mapper.CommunicateMapper">
+
+    <!--书籍推荐部分-->
+
+    <!--查询所有的书籍推荐-->
+    <select id="getAllBookCommunicate" resultType="com.LW1_ptlb.pojo.BookCommunicate">
+        select book_communicate_id bookCommunicateId,book_communicate_name bookCommunicateName,book_communicate_synopsis bookCommunicateSynopsis,book_communicate_picture bookCommunicatePicture,username userName from book_communicate_vw;
+    </select>
+
+    <!--按照书籍推荐id查询书记推荐信息-->
+    <select id="getBookCommunicateById" resultType="com.LW1_ptlb.pojo.BookCommunicate">
+        select book_communicate_id bookCommunicateId,book_communicate_name bookCommunicateName,book_communicate_synopsis bookCommunicateSynopsis,book_communicate_picture bookCommunicatePicture,username userName from book_communicate_vw where book_communicate_id=#{bookCommunicateId};
+    </select>
+
+    <!--按照推荐的书籍名查询书籍推荐（模糊查询）-->
+    <select id="getBookCommunicateByBookName" resultType="com.LW1_ptlb.pojo.BookCommunicate" parameterType="String">
+        select book_communicate_id bookCommunicateId,book_communicate_name bookCommunicateName,book_communicate_synopsis bookCommunicateSynopsis,book_communicate_picture bookCommunicatePicture,username userName from book_communicate_vw where book_communicate_name like '%${bookCommunicateName}%';
+    </select>
+
+    <!--按照用户名查询书籍推荐-->
+    <select id="getBookCommunicateByUserName" resultType="com.LW1_ptlb.pojo.BookCommunicate" parameterType="String">
+        select book_communicate_id bookCommunicateId,book_communicate_name bookCommunicateName,book_communicate_synopsis bookCommunicateSynopsis,book_communicate_picture bookCommunicatePicture,username userName from book_communicate_vw where username=#{userName};
+    </select>
+
+    <!--按照推荐的书籍名查询固定用户的书籍推荐（用户名固定，书籍名为模糊查询）-->
+    <select id="getBookCommunicateByName" resultType="com.LW1_ptlb.pojo.BookCommunicate" parameterType="Map">
+        select book_communicate_id bookCommunicateId,book_communicate_name bookCommunicateName,book_communicate_synopsis bookCommunicateSynopsis,book_communicate_picture bookCommunicatePicture,username userName from book_communicate_vw where username=#{userName} and book_communicate_name like '%${bookCommunicateName}%';
+    </select>
+    
+    <!--新增书籍推荐-->
+    <insert id="addBookCommunicate" parameterType="Map">
+        insert into book_communicate(book_communicate_name,book_communicate_synopsis,book_communicate_picture,username) values(#{bookCommunicateName},#{bookCommunicateSynopsis},#{bookCommunicatePicture},#{userName});
+    </insert>
+    
+    <!--根据书籍推荐id修改书籍推荐-->
+    <update id="updateBookCommunicate" parameterType="Map">
+        update book_communicate set book_communicate_name=#{bookCommunicateName},book_communicate_synopsis=#{bookCommunicateSynopsis} where book_communicate_id=#{bookCommunicateId} and status=1;
+    </update>
+
+    <!--根据书籍推荐id删除书籍推荐-->
+    <update id="deleteBookCommunicate" parameterType="Integer">
+        update book_communicate set status=0 where book_communicate_id=#{bookCommunicateId};
+    </update>
+
+
+
+    <!--用户评论部分-->
+
+    <!--查询所有用户评论-->
+    <select id="getAllUserComments" resultType="com.LW1_ptlb.pojo.UserComments">
+        select comments_id commentsId,username userName,user_comments userComments,comments_date commentsDate,book_communicate_id bookCommunicateId from user_comments_vw;
+    </select>
+
+    <!--新增用户评论-->
+    <insert id="addUserComments" parameterType="Map">
+        insert into user_comments(username,user_comments,comments_date,book_communicate_id) values(#{userName},#{userComments},#{commentsDate},#{bookCommunicateId});
+    </insert>
+
+    <!--删除用户评论-->
+    <update id="deleteUserComments" parameterType="Integer">
+        update user_comments set status=0 where comments_id=#{commentsId};
+    </update>
+
+    <!--按照用户名查询评论记录-->
+    <select id="getUserCommentsByUserName" parameterType="String" resultType="com.LW1_ptlb.pojo.UserComments">
+        select comments_id commentsId,username userName,user_comments userComments,comments_date commentsDate,book_communicate_id bookCommunicateId from user_comments_vw where username=#{userName};
+    </select>
+
+    <!--按照用户名和日期查询评论记录（日期为模糊查询）-->
+    <select id="getUserCommentsByUserDate" parameterType="Map" resultType="com.LW1_ptlb.pojo.UserComments">
+        select comments_id commentsId,username userName,user_comments userComments,comments_date commentsDate,book_communicate_id bookCommunicateId from user_comments_vw where username=#{userName} and comments_date like '%${commentsDate}%';
+    </select>
+
+    <!--按照书籍推荐编号查询对应书籍的所有评论-->
+    <select id="getUserCommentsByBookId" parameterType="Integer" resultType="com.LW1_ptlb.pojo.UserComments">
+        select comments_id commentsId,username userName,user_comments userComments,comments_date commentsDate,book_communicate_id bookCommunicateId from user_comments_vw where book_communicate_id=#{bookCommunicateId};
+    </select>
+
+</mapper>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" th:href="@{/assets/img/favicon.ico}"><!--资源链接-->
+
+    <title>Dashboard Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet"><!--资源链接-->
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/assets/css/dashboard.css}" rel="stylesheet"><!--资源链接-->
+  </head>
+
+  <body>
+    <!--th:insert="~{dashboard::topbar}"：插入代码块-->
+    <!--th:replace="~{commons/commons::topbar}"：替换代码块-->
+    <div th:replace="~{commons/commons::topbar}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!--侧边栏-->
+        <!--th:insert="~{dashboard::sidebar}"：插入代码块，此处插入的是 dashboard 页面 的 sidebar 代码块-->
+        <!--th:insert="~{被抽取的页面名称::被抽取的代码块名称}"-->
+        <!--th:replace="~{commons/commons::sidebar}：替换代码块-->
+
+        <!--(active='list.html') 是传给模板的参数为 active='list.html'-->
+        <!--含义就是替换代码块为 commons/commons::sidebar，同时携带参数 active，值为 list.html-->
+        <div th:replace="~{commons/commons::sidebar(active='communicate.html')}"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h1 class="h2">书籍推荐</h1>
+          </div>
+
+          <!--书籍推荐部分-->
+          <div class="table-responsive">
+
+            <!--左盒子-->
+            <div style="margin-left:368px;height:450px;padding: 10px;;width: 400px;text-align: left;font-size: large;background-color:#F8F9FA;display:inline-block;float:left">
+              <!--书籍推荐人-->
+              <div style="margin-right: auto;margin-left:auto;width: 700px;text-align: left;font-size: large;display:inline-block">由&nbsp;[[${userName}]]&nbsp;推荐</div>
+              <hr>
+              <br/>
+              <!--书籍名-->
+              <div style="margin-right: auto;margin-left:auto;width: 700px;text-align: left;font-size: large;display:inline-block">书籍名：&nbsp; 《[[${bookCommunicateName}]]》</div>
+              <hr>
+              <br/>
+              <!--书籍简介-->
+              <div style="margin-right: auto;margin-left:auto;width: 700px;text-align: left;font-size: large;display:inline-block">书籍简介：<br/> [[${bookCommunicateSynopsis}]] </div>
+
+            </div>
+
+            <!--右盒子-->
+            <div style="margin-right:369px;height:450px;width: 400px;text-align: left;font-size: large;background: grey;display:inline-block;float:right">
+              <div style="margin: auto">
+                <img th:src="@{/bookCommunicatePicture/}+${bookCommunicatePicture}" width="400px" height="450px">
+              </div>
+            </div>
+
+            <br/>
+
+          </div>
+
+
+          <hr>
+          <!--评论部分-->
+          <!--<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom" style="margin-top: 40px">-->
+          <h1 class="h2" style="margin-top: 100px;float: left">评论</h1>
+          <!--</div>-->
+
+          <!--th:href="@{/main/updateGradeByName/}+${user.userName}+'/'+${user.grade}"-->
+          <!--新增评论按钮-->
+          <a class="btn btn-sm btn-primary" th:href="@{/main/goAddUserComments/}+${bookCommunicateId}+'/'+${bookCommunicateName}+'/'+${userName}" style="background-color: white;border-color: black;color: black;float: right;margin-right: 40px;margin-top: 108px">评论</a>
+
+
+          <div class="table-responsive" style="margin-bottom: 100px">
+
+            <table class="table table-striped table-sm">
+              <thead>
+              <!--style="text-align: center"：内部文本居中-->
+              <tr style="text-align: center">
+                <th hidden="hidden">评论id</th>
+                <th width="50px">用户名</th>
+                <th width="50px">用户评论</th>
+                <th width="50px">评论日期</th>
+                <th hidden="hidden">书籍推荐编号</th>
+                <th style="width: 50px">操作</th>
+              </tr>
+              </thead>
+              <tbody style="text-align: center">
+              <!--遍历从后端传过来的数据-->
+              <!--style="text-align: center"：内部文本居中-->
+              <tr th:each="userComments:${userComments}">
+                <td th:text="${userComments.commentsId}" hidden="hidden"></td><!--书籍评论编号-->
+                <td th:text="${userComments.userName}" width="50px"></td><!--用户名-->
+                <td th:text="${userComments.userComments}" width="50px"></td><!--用户评论-->
+                <td th:text="${userComments.commentsDate}" width="50px"></td><!--评论日期-->
+                <td th:text="${userComments.bookCommunicateId}" hidden="hidden"></td><!--书籍推荐编号-->
+
+                <td style="width: 50px">
+                  <!--当权限等级大于等于1时才显示-->
+                  <a class="btn btn-sm btn-danger" th:href="@{/main/deleteComments/}+${userComments.commentsId}+'/'+${userComments.bookCommunicateId}" th:if="${session.grade}>=1">删除</a>
+                  <!--th:unless：除非，才不   此处是 除非权限等级大于等于1，才不会进行下面语句的运行-->
+                  <a class="btn btn-sm btn-danger" th:href="@{/main/deleteComments/}+${userComments.commentsId}+'/'+${userComments.bookCommunicateId}" th:unless="${session.grade}>=1"  th:if="${session.loginUser}==${userComments.userName}">删除</a>
+                </td>
+
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="../../../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../../../dist/js/bootstrap.min.js"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>
+      feather.replace()
+    </script>
+
+    <!-- Graphs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script>
+      var ctx = document.getElementById("myChart");
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          datasets: [{
+            data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
+            lineTension: 0,
+            backgroundColor: 'transparent',
+            borderColor: '#007bff',
+            borderWidth: 4,
+            pointBackgroundColor: '#007bff'
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: false
+              }
+            }]
+          },
+          legend: {
+            display: false,
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

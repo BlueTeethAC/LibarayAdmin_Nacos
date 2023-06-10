@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定 Mapper 接口-->
+<mapper namespace="com.LW1_ptlb.mapper.BookAdminMapper">
+
+    <!--============图书存量信息=============-->
+
+    <!--查询所有 图书存量的信息-->
+    <select id="selectBookAdmin" resultType="com.LW1_ptlb.pojo.BookCount">
+        select book_name_id bookNameId,book_name bookName,book_place bookPlace,book_price bookPrice,max_num maxNum,now_num nowNum from test_ptlb.book_count_vw;
+    </select>
+
+    <!--按照书名去查询书名（查重用的）-->
+    <select id="selectBookNameByBookName" parameterType="String" resultType="String">
+        select book_name from test_ptlb.book_count_vw where book_name=#{bookName};
+    </select>
+
+    <!--按照书名去查询书名（查重用的）-->
+    <select id="selectBookNameIdByBookName" parameterType="String" resultType="Integer">
+        select book_name_id from test_ptlb.book_count_vw where book_name=#{bookName};
+    </select>
+
+    <!--查询具体某个图书存量信息-->
+    <select id="selectBookAdminByBookName" resultType="com.LW1_ptlb.pojo.BookCount" parameterType="String">
+        select book_name_id bookNameId,book_name bookName,book_place bookPlace,book_price bookPrice,max_num maxNum,now_num nowNum from test_ptlb.book_count_vw where book_name=#{bookName};
+    </select>
+
+    <!--查询具体某个图书存量信息（模糊查询）-->
+    <select id="selectBookAdminByBookName2" resultType="com.LW1_ptlb.pojo.BookCount" parameterType="String">
+        select book_name_id bookNameId,book_name bookName,book_place bookPlace,book_price bookPrice,max_num maxNum,now_num nowNum from test_ptlb.book_count_vw where book_name like '%${bookName}%';
+    </select>
+
+    <!--添加新的 图书存量信息-->
+    <insert id="addBookAdmin" parameterType="Map">
+        insert into test_ptlb.book_count(book_name,book_place,book_price,max_num) values(#{bookName},#{bookPlace},#{bookPrice},#{maxNum});
+    </insert>
+
+    <!--修改图书存量信息-->
+    <update id="updateBookAdmin" parameterType="Map">
+        update test_ptlb.book_count set book_name=#{bookName},book_place=#{bookPlace},book_price=#{bookPrice},max_num=#{maxNum} where book_name_id=#{bookNameId} and status=1;
+    </update>
+
+    <!--按照书名删除图书存量信息（用的时候记得把 具体书本 和 图书借阅状态 状态都改为 0）-->
+    <update id="deleteBookAdmin" parameterType="String">
+        update test_ptlb.book_count set status=0 where book_name=#{bookName} and status=1;
+    </update>
+
+
+
+    <!--==============书本信息====================-->
+
+    <!--查询所有书本信息-->
+    <select id="selectAllBook" resultType="com.LW1_ptlb.pojo.Book">
+        select book_name bookName,book_name_id bookNameId,book_id bookId,borrow_status borrowStatus from test_ptlb.book_book_id_vw;
+    </select>
+
+    <!--查询当前可以借阅的书籍-->
+    <select id="selectCanBorrowBook" resultType="com.LW1_ptlb.pojo.Book">
+        select book_name bookName,book_name_id bookNameId,book_id bookId,borrow_status borrowStatus from test_ptlb.book_book_id_vw where borrow_status=1;
+    </select>
+
+    <!--按照书名查询当前可以借阅的书籍（在 mybatis 拼接字符串 '%${bookName}%'）-->
+    <select id="selectCanBorrowBookByName" resultType="com.LW1_ptlb.pojo.Book" parameterType="String">
+        select book_name bookName,book_name_id bookNameId,book_id bookId,borrow_status borrowStatus from test_ptlb.book_book_id_vw where borrow_status=0 and book_name = #{bookName};
+    </select>
+
+    <!--按照 书名查询书本信息（在 mybatis 拼接字符串 '%${bookName}%'）-->
+    <select id="selectAllBookByBookName" parameterType="String" resultType="com.LW1_ptlb.pojo.Book">
+        select book_name bookName,book_name_id bookNameId,book_id bookId,borrow_status borrowStatus from test_ptlb.book_book_id_vw where book_name like '%${bookName}%';
+    </select>
+
+    <!--按照书本id去查询书本id（查重用的）-->
+    <select id="selectBookIdByBookId" parameterType="String" resultType="String">
+        select book_id from test_ptlb.book_book_id_vw where book_id = #{bookId} ;
+    </select>
+
+    <!--按照 书本id 查询书本信息（在 mybatis 拼接字符串 '%${bookId}%'）-->
+    <select id="selectBookByBookId" resultType="com.LW1_ptlb.pojo.Book" parameterType="String">
+        select book_name bookName,book_name_id bookNameId,book_id bookId,borrow_status borrowStatus from test_ptlb.book_book_id_vw where book_id = #{bookId};
+    </select>
+
+    <!--添加 新的书本-->
+    <insert id="addBookInfo" parameterType="Map">
+        insert into test_ptlb.book_book_id(book_name_id,book_id) values(#{bookNameId},#{bookId});
+    </insert>
+
+    <!--修改 具体书本 的状态-->
+    <update id="updateBookStatus" parameterType="Map">
+        update test_ptlb.book_book_id set borrow_status=#{borrowStatus} where book_id=#{bookId} and status=1;
+    </update>
+
+    <!--删除 按照书名删除一批书本（把书本状态改为 0，只有在删除 图书存量信息的时候才去调用）-->
+    <update id="deleteBookByBookNameId" parameterType="Integer">
+        update test_ptlb.book_book_id set status=0 where book_name_id=#{bookNameId} and status=1;
+    </update>
+
+    <!--删除 按照鼠标呢删除具体一本书本（把书本状态改为 0）-->
+    <update id="deleteBookByBookId" parameterType="String">
+        update test_ptlb.book_book_id set status=0 where book_id=#{bookId} and status=1;
+    </update>
+
+
+
+
+    <!--==============书本借阅====================-->
+
+    <!--查询所有书本借阅记录-->
+    <select id="selectAllHistory" resultType="com.LW1_ptlb.pojo.BookBorrowHistory">
+        select borrow_id borrowId,book_name bookName,user_id userId,book_id bookId,borrow_date borrowDate,return_date returnDate,return_status returnStatus from test_ptlb.borrow_history_vw;
+    </select>
+
+    <!--按照用户名 查询该用户的 借阅记录-->
+    <select id="selectHistoryByUserName" resultType="com.LW1_ptlb.pojo.BookBorrowHistory" parameterType="String">
+        select borrow_id borrowId,book_name bookName,user_id userId,book_id bookId,borrow_date borrowDate,return_date returnDate,return_status returnStatus from test_ptlb.borrow_history_vw where user_id=(select userid from user_vw where username=#{userName});
+    </select>
+
+    <!--按照用户名 查询该用户未归还的 借阅记录-->
+    <select id="selectNeedReturnHistory" resultType="com.LW1_ptlb.pojo.BookBorrowHistory" parameterType="String">
+        select borrow_id borrowId,book_name bookName,user_id userId,book_id bookId,borrow_date borrowDate,return_date returnDate,return_status returnStatus from test_ptlb.borrow_history_vw where user_id=(select userid from user_vw where username=#{userName}) and return_status=0 or return_status=2;
+    </select>
+
+    <!--查询所有未归还的 借阅记录-->
+    <select id="selectAllNeedReturnHistory" resultType="com.LW1_ptlb.pojo.BookBorrowHistory">
+        select borrow_id borrowId,book_name bookName,user_id userId,book_id bookId,borrow_date borrowDate,return_date returnDate,return_status returnStatus from test_ptlb.borrow_history_vw where return_status=0 or return_status=2;
+    </select>
+
+    <!--用户借阅书籍（生成一条借阅记录）-->
+    <insert id="addBorrowHistory" parameterType="Map">
+        insert into test_ptlb.borrow_history(user_id,book_id,borrow_date,return_date) values(#{userId},#{bookId},#{borrowDate},#{returnDate});
+    </insert>
+
+    <!--用户归还书籍（修改一条借阅记录）-->
+    <update id="updateBorrowHistory" parameterType="Map">
+        update test_ptlb.borrow_history set return_status=#{returnStatus} where borrow_id=#{borrowId};
+    </update>
+
+    <!--按照书本编号查询查询书籍借阅记录（模糊查询）-->
+    <select id="selectHistoryByBookId" resultType="com.LW1_ptlb.pojo.BookBorrowHistory" parameterType="String">
+        select borrow_id borrowId,book_name bookName,user_id userId,book_id bookId,borrow_date borrowDate,return_date returnDate,return_status returnStatus from test_ptlb.borrow_history_vw where book_id like '%${bookId}%';
+    </select>
+
+    <!--按照书本编号查询用户书籍借阅记录（模糊查询）-->
+    <select id="selectMyHistoryByBookId" resultType="com.LW1_ptlb.pojo.BookBorrowHistory" parameterType="Map">
+        select borrow_id borrowId,book_name bookName,user_id userId,book_id bookId,borrow_date borrowDate,return_date returnDate,return_status returnStatus from test_ptlb.borrow_history_vw where book_id like '%${bookId}%' and user_id=#{userId};
+    </select>
+
+    <!--按照记录编号查询书籍借阅记录-->
+    <select id="selectHistoryByBorrowId" resultType="com.LW1_ptlb.pojo.BookBorrowHistory" parameterType="Integer">
+        select borrow_id borrowId,book_name bookName,user_id userId,book_id bookId,borrow_date borrowDate,return_date returnDate,return_status returnStatus from test_ptlb.borrow_history_vw where borrow_id=#{borrowId};
+    </select>
+
+    <!--按照记录编号查询用户书籍借阅记录-->
+    <select id="selectMyHistoryByBorrowId" resultType="com.LW1_ptlb.pojo.BookBorrowHistory" parameterType="Map">
+        select borrow_id borrowId,book_name bookName,user_id userId,book_id bookId,borrow_date borrowDate,return_date returnDate,return_status returnStatus from test_ptlb.borrow_history_vw where borrow_id=#{borrowId} and user_id=#{userId};
+    </select>
+
+    <!--按照（记录编号）删除 借阅记录-->
+    <update id="deleteBorrowHistory" parameterType="Integer">
+        update test_ptlb.borrow_history set status=0 where borrow_id=#{borrowId};
+    </update>
+
+</mapper>

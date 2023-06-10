@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" th:href="@{/assets/img/favicon.ico}"><!--资源链接-->
+
+    <title>Dashboard Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet"><!--资源链接-->
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/assets/css/dashboard.css}" rel="stylesheet"><!--资源链接-->
+  </head>
+
+  <body>
+    <!--th:insert="~{dashboard::topbar}"：插入代码块-->
+    <!--th:replace="~{commons/commons::topbar}"：替换代码块-->
+    <div th:replace="~{commons/commons::topbar}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!--侧边栏-->
+        <!--th:insert="~{dashboard::sidebar}"：插入代码块，此处插入的是 dashboard 页面 的 sidebar 代码块-->
+        <!--th:insert="~{被抽取的页面名称::被抽取的代码块名称}"-->
+        <!--th:replace="~{commons/commons::sidebar}：替换代码块-->
+
+        <!--(active='list.html') 是传给模板的参数为 active='list.html'-->
+        <!--含义就是替换代码块为 commons/commons::sidebar，同时携带参数 active，值为 list.html-->
+        <div th:replace="~{commons/commons::sidebar(active='bookAdmin.html')}"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h1 class="h2">修改图书存量信息</h1>
+          </div>
+
+
+
+          <div class="table-responsive">
+            <!--====================================-->
+            <!--设置表单跳转链接-->
+            <form class="form-signin text-center" th:action="@{/main/updateBookAdmin}">
+
+
+              <!--国际化多语言文本添加方式  th:placeholder="#{对应的文本名称}"-->
+
+              <!--书名id 隐藏域-->
+              <div hidden="hidden" style="margin-right: auto;margin-left:auto;width: 700px;text-align: left;font-size: large">请输入书名id：</div>
+              <input hidden="hidden" readonly="readonly" type="text" style="margin-bottom: 50px;margin-right: auto;margin-left:auto;width: 700px" name="bookNameId" id="bookNameId" class="form-control" th:placeholder="请输入书名id" th:value="${bookNameId}" required>
+
+
+              <!--书名（需要锁死）-->
+              <div style="margin-right: auto;margin-left:auto;width: 700px;text-align: left;font-size: large">请输入书名：</div>
+              <input readonly="readonly" type="text" style="margin-bottom: 50px;margin-right: auto;margin-left:auto;width: 700px" name="bookName" id="bookName" class="form-control" th:placeholder="请输入书名" th:value="${bookName}" required>
+
+              <!--图书存放位置-->
+              <div style="margin-right: auto;margin-left:auto;width: 700px;text-align: left;font-size: large">请输入图书存放位置：</div>
+
+              <!--第几号书柜-->
+              <div style="display: inline;margin-right: auto;margin-left:auto;width: 700px;text-align: left;font-size: large">书柜号(1~10):</div>
+              <input type="text" style="display: inline;margin-bottom: 50px;margin-right: 38px;margin-left:auto;width: 230px" name="bookPlace1" id="bookPlace1" class="form-control" th:placeholder="请输入图书存放位置的" th:value="${bookPlace1}" required>
+              <!--第几行-->
+              <div style="display: inline;margin-right: auto;margin-left:auto;width: 700px;text-align: left;font-size: large">行号(1~8):</div>
+              <input type="text" style="display: inline;margin-bottom: 50px;margin-right: auto;margin-left:auto;width: 230px" name="bookPlace2" id="bookPlace2" class="form-control" th:placeholder="请输入图书存放位置" th:value="${bookPlace2}" required>
+
+
+              <!--图书单价-->
+              <div style="margin-right: auto;margin-left:auto;width: 700px;text-align: left;font-size: large">请输入图书单价：</div>
+              <input type="text" style="margin-bottom: 50px;margin-right: auto;margin-left:auto;width: 700px" name="bookPrice" id="bookPrice" class="form-control" th:placeholder="请在此输入图书单价" th:value="${bookPrice}" required>
+
+              <!--图书初始数量（需要锁死）-->
+              <div style="margin-right: auto;margin-left:auto;width: 700px;text-align: left;font-size: large">请输入图书初始数量(0~10)：</div>
+              <input readonly="readonly" type="text" style="margin-bottom: 50px;margin-right: auto;margin-left:auto;width: 700px" name="maxNum" id="maxNum" class="form-control" th:placeholder="请在此输入图书初始数量" th:value="${maxNum}" required>
+
+              <div class="checkbox mb-3">
+
+
+              </div>
+
+              <!--@thymesVar id="msg" type="String"-->
+              <!--单纯只是传参的话，用 ${参数名}，#{}是用来国际化的，没有配置国际化文本的话会乱码-->
+              <!--th:if="${not #strings.isEmpty(msg)}"：如果 msg 的值为空，则不显示消息-->
+              <p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+
+              <button class="btn btn-lg btn-primary btn-block" style="width: 500px;margin: auto" type="submit" th:text="修改图书存量信息">修改图书存量信息</button>
+
+            </form>
+            <!--====================================-->
+            <table class="table table-striped table-sm">
+
+
+              <tbody>
+
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="../../../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../../../dist/js/bootstrap.min.js"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>
+      feather.replace()
+    </script>
+
+    <!-- Graphs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script>
+      var ctx = document.getElementById("myChart");
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          datasets: [{
+            data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
+            lineTension: 0,
+            backgroundColor: 'transparent',
+            borderColor: '#007bff',
+            borderWidth: 4,
+            pointBackgroundColor: '#007bff'
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: false
+              }
+            }]
+          },
+          legend: {
+            display: false,
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

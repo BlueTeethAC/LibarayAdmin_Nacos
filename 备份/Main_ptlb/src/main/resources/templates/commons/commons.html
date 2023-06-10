@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--头部导航栏-->
+<!--th:fragment="topbar"：抽取代码块，名为 topbar-->
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" th:fragment="topbar">
+
+  <!--设置登陆进页面左上角显示的用户名 字符串表达式用 ${}}-->
+  <a class="navbar-brand col-sm-3 col-md-2 mr-0" th:href="@{/main/returnIndex}"> [[${session.loginUser}]] </a>
+
+  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+  <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+      <!--将 Sign out 改成注销-->
+      <a class="nav-link" th:href="@{/main/cancellation}">注销</a>
+    </li>
+  </ul>
+</nav>
+
+
+<!--侧边栏-->
+<!--th:fragment="sidebar"：抽取代码块，把标签所对应的包括标签内的代码块进行抽取-->
+<!--th:fragment="被抽取的代码块名称"-->
+<nav class="col-md-2 d-none d-md-block bg-light sidebar" th:fragment="sidebar">
+  <div class="sidebar-sticky">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+
+        <!--th:href="@{/login.html}"：跳转到主页-->
+        <!--th:class="${active=='main.html'?'nav-link':'nav-link'：当前链接传过来的参数 active 值为 main.html 则class=nav-link active，否则 class=nav-link-->
+        <a th:class="${active=='main.html'?'nav-link active':'nav-link'}" th:href="@{/main/returnIndex}">
+
+          <span data-feather="home"></span>
+          <!--将 dashboard 改为 首页-->
+          首页 <span class="sr-only">(current)</span>
+        </a>
+      </li>
+
+      <!--个人借阅信息-->
+      <li class="nav-item">
+        <a th:class="${active=='main.html'?'nav-link active':'nav-link'}" th:href="@{/main/returnIndex}">
+          <span data-feather="file"></span>
+          首页
+        </a>
+      </li>
+
+      <!--个人借阅信息-->
+      <li class="nav-item">
+        <a th:class="${active=='myBorrowBook.html'?'nav-link active':'nav-link'}" th:href="@{/main/goMyBorrowHistory}">
+          <span data-feather="file"></span>
+          个人借阅信息
+        </a>
+      </li>
+
+
+      <!--书籍借阅-->
+      <li class="nav-item">
+        <a th:class="${active=='borrowBook.html'?'nav-link active':'nav-link'}" th:href="@{/main/goBorrowBook}">
+          <span data-feather="shopping-cart"></span>
+          书籍借阅
+        </a>
+      </li>
+
+
+      <!--我的书籍推荐-->
+      <li class="nav-item">
+        <a th:class="${active=='myCommunicate.html'?'nav-link active':'nav-link'}" th:href="@{/main/goMyCommunicate}">
+          <span data-feather="users"></span>
+          我的书籍推荐
+        </a>
+      </li>
+
+
+      <!--书籍推荐-->
+      <li class="nav-item">
+        <a th:class="${active=='communicate.html'?'nav-link active':'nav-link'}" th:href="@{/main/goCommunicate}">
+          <span data-feather="users"></span>
+          书籍推荐
+        </a>
+      </li>
+
+      <li class="nav-item" hidden="hidden">
+        <a class="nav-link" href="#">
+          <span data-feather="bar-chart-2"></span>
+          预留栏位（保留）
+        </a>
+      </li>
+
+      <li class="nav-item" hidden="hidden">
+        <a class="nav-link" href="#">
+          <span data-feather="layers"></span>
+          预留栏位（保留）
+        </a>
+      </li>
+    </ul>
+
+    <!--用户设置-->
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+      <!--侧边栏中的中间栏-->
+      <span>用户设置</span>
+      <a class="d-flex align-items-center text-muted" href="#">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h6>
+    <ul class="nav flex-column mb-2">
+      <li class="nav-item">
+        <!--设置 修改密码 页面的跳转链接-->
+        <a th:class="${active=='updatepwd.html'?'nav-link active':'nav-link'}" th:href="@{/main/goUpdatePwd}">
+          <span data-feather="file-text"></span>
+          <!--侧边栏-->
+          修改密码
+        </a>
+      </li>
+      <!--th:hidden="${session.grade}==2?0:hidden"：从后端获得session.grade 登录的用户的权限等级，假如权限等级不为2，则不显示该选项-->
+      <li class="nav-item" th:hidden="${session.grade}==2?0:hidden">
+        <!--设置选中该选项时高亮-->
+        <a th:class="${active=='userAdmin.html'?'nav-link active':'nav-link'}" th:href="@{/main/goUserAdmin}">
+          <!--假如权限等级没有2，那就不显示 用户权限管理的选项-->
+          <span data-feather="file-text"></span>
+          <!--侧边栏-->
+          用户权限管理
+        </a>
+      </li>
+      <li class="nav-item" hidden="hidden">
+        <a class="nav-link" href="#">
+          <span data-feather="file-text"></span>
+          预留栏位（保留）
+        </a>
+      </li>
+      <li class="nav-item" hidden="hidden">
+        <a class="nav-link" href="#">
+          <span data-feather="file-text"></span>
+          预留栏位（保留）
+        </a>
+      </li>
+    </ul>
+
+
+    <!--书籍管理-->
+    <!--th:hidden="${session.grade}>=1?0:hidden" ：权限等级为 0 的用户是看不到这个模块的-->
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" th:hidden="${session.grade}>=1?0:hidden">
+      <!--侧边栏中的中间栏-->
+      <span th:hidden="${session.grade}>=1?0:hidden">书籍管理</span>
+      <a class="d-flex align-items-center text-muted" href="#" >
+        <span data-feather="plus-circle" th:hidden="${session.grade}>=1?0:hidden"></span>
+      </a>
+    </h6>
+    <ul class="nav flex-column mb-2" th:hidden="${session.grade}>=1?0:hidden">
+
+      <li class="nav-item" th:hidden="${session.grade}>=1?0:hidden">
+        <!--设置 图书存量管理 页面的跳转链接-->
+        <a th:class="${active=='bookAdmin.html'?'nav-link active':'nav-link'}" th:href="@{/main/goBookAdmin}">
+          <span data-feather="file-text"></span>
+          <!--侧边栏-->
+          图书存量管理
+        </a>
+      </li>
+
+      <!--th:hidden="${session.grade}==2?0:hidden"：从后端获得session.grade 登录的用户的权限等级，假如权限等级不为2，则不显示该选项-->
+      <li class="nav-item" th:hidden="${session.grade}>=1?0:hidden">
+        <!--设置选中该选项时高亮-->
+        <a th:class="${active=='book.html'?'nav-link active':'nav-link'}" th:href="@{/main/goBook}">
+          <!--假如权限等级没有2，那就不显示 用户权限管理的选项-->
+          <span data-feather="file-text"></span>
+          <!--侧边栏-->
+          具体书本管理
+        </a>
+      </li>
+
+
+      <li class="nav-item" th:hidden="${session.grade}>=1?0:hidden">
+        <a th:class="${active=='borrowBookAdmin.html'?'nav-link active':'nav-link'}" th:href="@{/main/goBorrowBookAdmin}">
+          <span data-feather="file-text"></span>
+          借阅书籍归还
+        </a>
+      </li>
+
+
+      <li class="nav-item" hidden="hidden">
+        <a class="nav-link" href="#">
+          <span data-feather="file-text"></span>
+          预留栏位（保留）
+        </a>
+      </li>
+
+    </ul>
+
+  </div>
+</nav>
+
+
+
+</html>

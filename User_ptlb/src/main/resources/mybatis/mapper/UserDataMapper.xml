@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定 Mapper 接口-->
+<mapper namespace="com.LW1_ptlb.mapper.UserDataMapper">
+
+    <!--查询所有用户-->
+    <select id="selectAllUser" resultType="com.LW1_ptlb.pojo.User">
+        select * from test_ptlb.user_vw;
+    </select>
+
+    <!--按照 用户名 查询用户-->
+    <select id="selectUserByName" resultType="com.LW1_ptlb.pojo.User" parameterType="String">
+        select * from test_ptlb.user_vw where username=#{userName};
+    </select>
+
+    <!--按照 用户名 查询用户（包含已经删除的）-->
+    <select id="selectUserByName3" resultType="com.LW1_ptlb.pojo.User" parameterType="String">
+        select * from test_ptlb.user where username=#{userName};
+    </select>
+
+    <!--按照 用户名 查询用户（模糊查询）-->
+    <select id="selectUserByName2" resultType="com.LW1_ptlb.pojo.User" parameterType="String">
+        select * from test_ptlb.user_vw where username like '%${userName}%';
+    </select>
+
+    <!--新增用户-->
+    <insert id="addUser" parameterType="com.LW1_ptlb.pojo.User">
+        insert into test_ptlb.user(user_id,username,pwd,grade) values(#{userId},#{userName},#{pwd},#{grade});
+    </insert>
+
+    <!--修改用户（改权限）-->
+    <update id="updateUserGrade" parameterType="Map">
+        update test_ptlb.user set grade=#{grade} where username=#{username};
+    </update>
+
+    <!--修改用户（改密码）-->
+    <update id="updateUserPwd" parameterType="Map">
+        update test_ptlb.user set pwd=#{pwd} where username=#{username};
+    </update>
+
+    <!--删除用户：删除用户 把 用户的状态改为 0，不是去删除-->
+    <update id="deleteUser" parameterType="String">
+        update test_ptlb.user set status=0 where username=#{username};
+    </update>
+
+</mapper>
